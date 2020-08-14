@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateBooksTable extends Migration
@@ -13,7 +14,8 @@ class CreateBooksTable extends Migration
      */
     public function up()
     {
-        Schema::create('books', function (Blueprint $table) {
+        Schema::create(
+            'books', function (Blueprint $table) {
             $table->id();
 
             $table->unsignedBigInteger('user_id');
@@ -24,13 +26,34 @@ class CreateBooksTable extends Migration
                 ->onDelete('cascade');
 
             $table->string('name');
-            $table->string('author');
+
+            $table->unsignedBigInteger('author_id');
+            $table->foreign('author_id')
+                ->references('id')
+                ->on('authors')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
             $table->integer('pages_number');
             $table->text('annotation');
-            $table->string('image_path');
+            $table->longText('image_path');
 
             $table->timestamps();
-        });
+        }
+        );
+        /*$data = [];
+
+        for ($i = 1; $i <= 10; $i++) {
+            $data[] = [
+                'user_id' => 1,
+                'name' => "Name $i",
+                'author_id' => "$i",
+                'pages_number' => rand(40, 700),
+                'annotation' => "annotation $i"
+            ];
+        }
+
+        DB::table('books')->insert($data);*/
     }
 
     /**
